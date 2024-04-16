@@ -1,10 +1,5 @@
 
 import React from 'react';
-import { Link, Routes, Route } from 'react-router-dom';
-import Radiology from '../Radiology/Radiology';
-import Lab from '../Lab/Lab'; 
-import Admission from '../Admission/Admission'; 
-import Pharmacy from '../Pharmacy/Pharmacy'; 
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
@@ -16,15 +11,29 @@ function OverallView() {
     { headerName: "UHID", field: "uhid", editable: false },
     { headerName: "VisitNo", field: "visitNo", editable: false  },
     { headerName: "VisitDate", field: "visitDate" , editable: false },
-    { headerName: "Rad_Order", field: "rad_Order", editable: false  },
+    { headerName: "Vitals_Completed_time", field: "vitals_Completed_time", editable: true },  // time and date select field
+    { headerName: "Doctor_Checkin", field: "doctor_Checkin", editable: true },
+    { headerName: "Rad_Investigations", field: "rad_Order", editable: false  },
+    { headerName: "Rad_Investigations_Billed", field: "rad_Investigations_Billed", editable: true  },
+
     { headerName: "Study_Start_Status", field: "study_Start" ,editable: true},
     { headerName: "Radiology_Report_Authorized", field: "study_Authorized" ,editable: true},
-    { headerName: "Lab_Order", field: "lab_Order", editable: false  },
+    { headerName: "Lab_Investigations", field: "lab_Order", editable: true  },
+    { headerName: "Lab_Investigations_Billed", field: "lab_Investigations_Billed", editable: true  },
+
     { headerName: "Sample_Collected", field: "sample_Collected" ,editable: true},
     { headerName: "Lab_Authorized", field: "lab_Authorized",editable: true },
+    { headerName: "Procedure_Advised", field: "procedure_Advised",editable: true },
+    { headerName: "Proc_Billed", field: "proc_Billed",editable: true },
+
+    { headerName: "Admission_Advised", field: "admission_advised", editable: true },
     { headerName: "Admission_Status", field: "admission_Status" ,editable: true},
     { headerName: "Medicines_Prescribed", field: "medicines_Prescribed", editable: false  },
     { headerName: "Billing_Status", field: "billing_status", editable: true },
+    { headerName: "Followup_Appointment", field: "followup_Appointment", editable: true },
+    { headerName: "Followup_Billed", field: "followup_Billed", editable: true },
+   
+
   ];
 
   const defaultColDef = {
