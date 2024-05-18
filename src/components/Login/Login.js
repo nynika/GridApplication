@@ -53,9 +53,15 @@ const Login = ({ handleLogin }) => {
 export default Login; 
  */
 
+
 import React, { useState } from 'react';
 import './login.css';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faKey } from '@fortawesome/free-solid-svg-icons';
+
+
+
 
 const Login = ({ onLogin }) => {
   const navigate = useNavigate();
@@ -64,7 +70,6 @@ const Login = ({ onLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const response = await fetch('http://192.168.15.3/NewHIS/api/his/patLogin', {
         method: 'POST',
@@ -76,22 +81,13 @@ const Login = ({ onLogin }) => {
 
       if (response.ok) {
         const data = await response.json();
-        if (data.userName === "radiology") {
-          onLogin("radiology");
-          navigate('/radiology'); 
-        } else if (data.userName === "Lab") {
-          onLogin("lab");
-          navigate('/lab');
-        } else if (data.userName === "Admission") {
-          onLogin("admission");
-          navigate('/admission');
-        } else if (data.userName === "Pharmacy") {
-          onLogin("pharmacy");
-          navigate('/pharmacy');
-        } else {
-          alert('Invalid role');
-          console.log(data)
-        }
+        const userDetails = {
+          userId: data.userId, 
+          username: data.userName,
+          role: data.userName.toLowerCase() 
+        };
+        onLogin(userDetails);  
+        navigate(`/${userDetails.role}`);
       } else {
         alert('Failed to login. Please try again later.');
       }
@@ -101,38 +97,46 @@ const Login = ({ onLogin }) => {
     }
   };
 
+  
   return (
-    <div className="login-container">
-      <h2 className="login-heading">Login</h2>
-      <form onSubmit={handleSubmit} className="login-form">
-        <div>
-          <label>UserId:</label>
-          <input
-            type="text"
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-            className="login-input"
-            required
-          />
-        </div>
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="login-input"
-            required
-          />
-        </div>
 
-        <button type="submit" className="login-button">Login</button>
-      </form>
+    <div className="login-container"  >
+      <div className="login-content">
+        <h2 className="login-heading">Patient Tracking Login</h2>
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="input-group">
+           <FontAwesomeIcon icon={faUser} className="input-icon" /> 
+            <input
+              placeholder='UserId'
+              type="text"
+              value={userId}
+              onChange={(e) => setUserId(e.target.value)}
+              className="login-input" 
+              required
+            />
+          </div>
+          <div className="input-group">
+           <FontAwesomeIcon icon={faKey} className="input-icon" />
+            <input
+              placeholder='Password'
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="login-input"
+              required
+            />
+          </div>
+          <button type="submit" className="login-button">Sign In</button>
+        </form>
+      </div>
     </div>
   );
+  
 };
 
 export default Login;
+
+
 
 
 
