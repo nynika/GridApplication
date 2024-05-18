@@ -1,52 +1,81 @@
-
-/* Container styles */
 .login-container {
-    width: 300px;
-    height: auto;
-    margin: auto; 
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}  
+  width: 100vw;
+  height: 100vh; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-image: url('../../assets/RelaHospital.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.login-content {
+  width: 400px;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: rgba(70, 95, 95, 0.5); 
+  position: relative; 
+}
+
+.login-heading {
+  font-size: 24px;
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+
+.login-input {
+  width: 90%;
+  height: 30px;
+  margin-bottom: 15px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.login-button {
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  width: 100px;
+  position: relative; 
+  margin: 0 auto;
+  border-radius: 50px;
+  height: 45px;
+}
+
+.login-button:hover {
+  background-color: #0056b3;
+}
+
+
+/*--------------------------------- */
+
+.login-form .input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-form .input-icon {
+  position: absolute;
+  left: 10px; 
+  z-index: 10;
+  margin-bottom: 15px;
+  color: #ccc; 
+}
+
+.login-form .login-input {
+  padding-left: 40px;
+  width: 100%; 
   
-  
-  /* Heading styles */
-  .login-heading {
-    font-size: 24px;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  /* Form styles */
-  .login-form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  /* Input field styles */
-  .login-input {
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
-  
-  /* Button styles */
-  .login-button {
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-  }
-  
-  .login-button:hover {
-    background-color: #0056b3;
-  }
-  
+}
