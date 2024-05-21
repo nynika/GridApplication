@@ -141,9 +141,7 @@ const columnDefs = [
   };
   
   
-
 /* get for overallview */
-
 /*  useEffect(() =>{
   if (gridApi && toDate){
     fetchData(toDate);
@@ -155,7 +153,6 @@ const columnDefs = [
     if (!date) return null; 
     return new Date(date).toISOString().slice(0,10);
   };
-
 
  /*  const fetchData = (date, ) => {
     const formattedDate = formatDate(date);
@@ -222,7 +219,7 @@ const handleChange = (field, event) => {
   }));
 };  
  */
-
+/* 
 
 const handleChange = (field, value) => {
   if (!value) {
@@ -232,27 +229,32 @@ const handleChange = (field, value) => {
     }));
   } else {
     let formattedValue = value;
-
-   /*  if (field === 'datetime') {
-      const [day, month, year] = value.split('/');
-      formattedValue = new Date(`${day}-${month}-${year}`);
-
-      // Check if the formatted value is a valid date
-      if (isNaN(formattedValue.getTime())) {
-        console.error('Invalid date:', value);
-        return;
-      }
-    } */
-
     setPopupData(prevDetails => ({
       ...prevDetails,
       [field]: formattedValue,
+    }));
+  }
+}; */
+
+
+
+const handleChange = (field, value) => {
+  if (!value) {
+    setPopupData(prevDetails => ({
+      ...prevDetails,
+      [field]: null,
+    }));
+  } else {
+    setPopupData(prevDetails => ({
+      ...prevDetails,
+      [field]: value,
     }));
   }
 };
 
   /* post */
 
+/* 
   const handleSubmit = () => {
     const saveUrl = 'http://192.168.15.3/NewHIS/api/his/SaveOrUpdateQCVisittracking';
     fetch(saveUrl, {
@@ -281,12 +283,44 @@ const handleChange = (field, value) => {
       console.error('Error:', error);
       alert('Failed to save changes: ' + error.message);
     });
+  }; */
+  
+
+  const handleSubmit = () => {
+    const saveUrl = 'http://192.168.15.3/NewHIS/api/his/SaveOrUpdateQCVisittracking';
+    fetch(saveUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        VisitId: popupData.registrationId,  
+        Vitals_Completed_time: popupData.vitals_Completed_time,
+        Doctor_Checkin: popupData.doctor_Checkin,
+        Procedure_Advised: popupData.procedure_Advised,
+        Admission_Advised: popupData.admission_Advised,
+        Admission_Status: popupData.admission_Status,
+        CreatedId: user ? user.userId : 'defaultUserId',  
+        ModifyId: user ? user.userId : 'defaultUserId'
+      }),
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      console.log('Success:', responseData);
+      alert('Saved Successfully: ' + (responseData.message || 'Your changes have been saved.'));
+      fetchVisitDetails(popupData.registrationId);  // Fetch the updated data
+      setShowPopup(false);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Failed to save changes: ' + error.message);
+    });
   };
   
 
 /* get for Popup */
 
-
+/* 
 const fetchVisitDetails = (visitId) => {
   if (!visitId) return;
   const url = `http://192.168.15.3/NewHIS/api/his/UpdateQCEMRDashboard_Visit?Todate=${toDate}&VisitId=${visitId}`;
@@ -295,7 +329,39 @@ const fetchVisitDetails = (visitId) => {
     .then(data => {
       console.log("Fetched visit details:", data); 
       if (data && data.length > 0) {
-        setPopupData(prevData => ({ ...prevData, ...data[0] }));
+        setPopupData(prevData => ({ 
+          ...prevData, ...data[0] }));
+      }
+    })
+    .catch(error => {
+      console.error('Failed to fetch visit details:', error);
+    });
+}; */
+
+
+const fetchVisitDetails = (visitId) => {
+  if (!visitId) return;
+  const url = `http://192.168.15.3/NewHIS/api/his/UpdateQCEMRDashboard_Visit?Todate=${toDate}&VisitId=${visitId}`;
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      console.log("Fetched visit details:", data);
+      if (data && data.length > 0) {
+        const visitData = data[0];
+        const formatDate = (dateString) => {
+          if (!dateString) return '';
+          const date = new Date(dateString);
+          const offset = date.getTimezoneOffset();
+          date.setMinutes(date.getMinutes() - offset);
+          return date.toISOString().split('T')[0];
+        };
+        setPopupData(prevData => ({
+          ...prevData,
+          ...visitData,
+          vitals_Completed_time: formatDate(visitData.vitals_Completed_time),
+          doctor_Checkin: formatDate(visitData.doctor_Checkin),
+          admission_Advised: formatDate(visitData.admission_Advised)
+        }));
       }
     })
     .catch(error => {
@@ -345,6 +411,8 @@ const onCellClicked = (event) => {
   }
 };
 
+
+
 function Popup({ data, onClose}) {
   if (!data) return null; 
 return (
@@ -373,7 +441,7 @@ return (
 
 
               <div className="form-group">
-                  <label>Vitals Completed Time :</label>
+                  <label>Vitals Completed :</label>
                   <input type="date" value={data.vitals_Completed_time || ''} 
                   onChange={e => handleChange('vitals_Completed_time', e.target.value)}  />
               </div>
@@ -386,12 +454,6 @@ return (
               </div>
 
               <div className="form-group">
-             <label>Admission Advised:</label>            
-             <input type="date" value={data.admission_Advised || ''}
-              onChange={e => handleChange('admission_Advised', e.target.value)} />
-              </div>
-
-                    <div className="form-group">
                     <label>Procedure Advised:</label>
                     <select
                       value={data.procedure_Advised || ''}
@@ -402,6 +464,14 @@ return (
                       <option value="No">No</option>
                     </select>
                   </div>
+
+              <div className="form-group">
+             <label>Admission Advised:</label>            
+             <input type="date" value={data.admission_Advised || ''}
+              onChange={e => handleChange('admission_Advised', e.target.value)} />
+              </div>
+
+                  
 
                   <div className="form-group">
                     <label>Admission Status:</label>
@@ -415,15 +485,13 @@ return (
                     </select>
                   </div>
 
-
-
                <div className="form-group">
-                  <label>PresOrdercnt:</label>
+                  <label>OrderCount:</label>
                   <input type="text" value={data.presOrdercnt || 0} readOnly  disabled/>
               </div>
 
                <div className="form-group">
-                  <label>PresBillcnt</label>
+                  <label>BillCount</label>
                   <input type="text" value={data.presBillcnt || 0}  disabled/>
                </div>
                                         
@@ -432,7 +500,9 @@ return (
       </form>
     </div>
     );
-}
+} 
+
+
 
 
 return (
@@ -441,8 +511,8 @@ return (
     <h1>Patient Tracking System</h1>
 
     <input type="date" value={toDate} onChange={onDateChange}
-      style={{ padding: '10px', border: '2px solid #ccc', borderRadius: '4px', right:'20px',
-       fontSize: '16px', color: '#333', backgroundColor: 'LightGray', width: '200px',position:'absolute',top:'30px',right:'300px'}} />
+      style={{ padding: '10px', border: '2px solid #ccc', borderRadius: '4px', 
+       fontSize: '16px', color: '#333', backgroundColor: 'LightGray', width: '200px',position:'absolute',top:'30px',right:'220px'}} />
     <div className="ag-theme-alpine">
 
 
