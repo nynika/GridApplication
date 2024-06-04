@@ -6,7 +6,7 @@ import './PopupStyles.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import relalogo from '../../assets/relalogo.jpg'; 
-import { useNavigate } from 'react-router-dom';
+import { json, useNavigate } from 'react-router-dom';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import * as XLSX from 'xlsx';
 
@@ -142,34 +142,10 @@ const columnDefs = [
   
   
 /* get for overallview */
-/*  useEffect(() =>{
-  if (gridApi && toDate){
-    fetchData(toDate);
-  }
-},[gridApi,toDate]);  */
-
-
   const formatDate = (date) => {
     if (!date) return null; 
     return new Date(date).toISOString().slice(0,10);
   };
-
- /*  const fetchData = (date, ) => {
-    const formattedDate = formatDate(date);
-    if (!formattedDate) return;
-    const url = `http://192.168.15.3/NewHIS/api/his/Get_opd_Process_v1?Todate=${formattedDate}`;
-
-    http://192.168.15.3/NewHIS/api/his/Get_opd_Process_v1?Todate=2024-05-16&Type=4
-    fetch(url)
-      .then(response => response.json()) 
-      .then(data => {
-        if (gridApi) gridApi.setRowData(data);
-      })
-      .catch(error => {
-        console.error('Failed to fetch data:', error);
-      });
-  }; */
-
 
   useEffect(() => {
     if (gridApi && toDate && user && user.userId) {
@@ -179,25 +155,27 @@ const columnDefs = [
 
 
 const fetchData = (date, userId) => {
-  const formattedDate = formatDate(date);
-  if (!formattedDate || !userId) return;
+  const formattedDate = formatDate(date);    // Date  formating
+  if (!formattedDate || !userId) return;     // input validation
   const url = `http://192.168.15.3/NewHIS/api/his/Get_opd_Process_v1?Todate=${formattedDate}&Type=${userId}`;
   fetch(url)
     .then(response => response.json()) 
     .then(data => {
-      if (gridApi) {
-         // Assuming data is an array of row data objects
-        setRowData(data);
+     // data handling
+      if (gridApi) {  
+        setRowData(data);   // Assuming data is an array of row data objects
         gridApi.setRowData(data, userId);
       } else {
         console.error('Grid API is not available.');
       }
     })
+    // error handling
     .catch(error => {
       console.error('Failed to fetch data:', error);
     });
 };
   
+
   const onGridReady = (params) => {
     setGridApi(params.api);
   };
@@ -210,33 +188,6 @@ const fetchData = (date, userId) => {
 
 
 /* popup start */
-
-/* 
-const handleChange = (field, event) => {
-  setPopupData(prevDetails => ({
-    ...prevDetails,
-    [field]: event.target.value,
-  }));
-};  
- */
-/* 
-
-const handleChange = (field, value) => {
-  if (!value) {
-    setPopupData(prevDetails => ({
-      ...prevDetails,
-      [field]: null,
-    }));
-  } else {
-    let formattedValue = value;
-    setPopupData(prevDetails => ({
-      ...prevDetails,
-      [field]: formattedValue,
-    }));
-  }
-}; */
-
-
 
 const handleChange = (field, value) => {
   if (!value) {
@@ -411,8 +362,6 @@ const onCellClicked = (event) => {
   }
 };
 
-
-
 function Popup({ data, onClose}) {
   if (!data) return null; 
 return (
@@ -438,7 +387,6 @@ return (
                   <label>Visit Date:</label>
                   <input type="text" value={data.visitDate} readOnly  disabled />
               </div>
-
 
               <div className="form-group">
                   <label>Vitals Completed :</label>
@@ -470,8 +418,7 @@ return (
              <input type="date" value={data.admission_Advised || ''}
               onChange={e => handleChange('admission_Advised', e.target.value)} />
               </div>
-
-                  
+               
 
                   <div className="form-group">
                     <label>Admission Status:</label>
@@ -503,8 +450,6 @@ return (
 } 
 
 
-
-
 return (
   <div className="App">
    <img src={relalogo} alt="OPD Patient Tracking" style={{ width: '150px',position:'absolute',left:'50px' ,top:'0px'}} /> 
@@ -525,7 +470,7 @@ return (
       onCellClicked={onCellClicked} />
     </div>
 
-    <button className ="export-button "onClick={handleExport} >Download</button>
+    <button className ="export-button "onClick={handleExport} >Export</button>
   
 
     <div style={{ padding: '10px', fontSize: '14px',marginTop:'10px' }}>
@@ -544,8 +489,6 @@ return (
   </div>
 
 )} 
-
-
 
   {showPopup && popupData && (
   <Popup
