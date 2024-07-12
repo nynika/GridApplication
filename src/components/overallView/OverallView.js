@@ -348,6 +348,7 @@ const handleExport = () => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
     XLSX.writeFile(workbook, "PatientData.xlsx");
+    
   };
 
 
@@ -361,6 +362,8 @@ const onCellClicked = (event) => {
     setShowPopup(true);
   }
 };
+
+
 
 function Popup({ data, onClose}) {
   if (!data) return null; 
@@ -473,10 +476,9 @@ return (
     <button className ="export-button "onClick={handleExport} >Export</button>
   
 
-    <div style={{ padding: '10px', fontSize: '14px',marginTop:'10px' }}>
-  Click on any <strong>VisitId</strong> to view more details.
+    <div style={{ padding: '10px', fontSize: '14px',marginTop:'10px' ,color:'#0972D3'}}> 
+  Click <strong>VisitId</strong> to enlarge
 </div>
-
 
     {user && (
   <div className="user-details" style={{ position: 'absolute', top: '10px', right: '10px',fontSize:'12px',color:'GrayText' }}>
